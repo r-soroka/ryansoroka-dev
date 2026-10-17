@@ -1,0 +1,50 @@
+---
+/**
+ * Contact: the closing section — your email, a button that opens the
+ * contact popout, and any social links filled in in site.config.ts.
+ */
+import SectionHeading from "./SectionHeading.astro";
+import ContactDialog from "./ContactDialog.astro";
+import { SITE } from "../site.config";
+
+// Only the social links that have a URL are shown.
+const socials = [
+    { label: "GITHUB", href: SITE.socials.github },
+    { label: "LINKEDIN", href: SITE.socials.linkedin },
+].filter((link) => link.href !== "");
+---
+
+<section id="contact" class="border-t border-line pt-16 pb-20 md:pt-24 md:pb-28">
+    <SectionHeading number="06" title="Contact" />
+
+    <!-- The big email works as a normal mailto link on its own. -->
+    <a
+            href={`mailto:${SITE.email}`}
+            class="inline-block border-b-4 border-accent text-[34px] leading-[1.05] font-extrabold tracking-tight break-all text-text no-underline md:text-[64px]"
+    >
+        {SITE.email}
+    </a>
+
+    <div class="mt-10 flex flex-wrap gap-3 font-mono text-xs tracking-wider md:text-sm">
+        <!-- Opens the ContactDialog below (wired up in ContactDialog's script). -->
+        <button
+                type="button"
+                data-opens-contact
+                class="flex min-h-11 cursor-pointer items-center bg-accent px-5 text-bg hover:bg-accent-light"
+        >
+            GET IN TOUCH
+        </button>
+        {
+            socials.map((link) => (
+                    <a
+                            href={link.href}
+                            class="flex min-h-11 items-center border border-line px-5 text-accent hover:text-accent-light"
+                    >
+                        {link.label} ↗
+                    </a>
+            ))
+        }
+    </div>
+
+    <ContactDialog />
+</section>

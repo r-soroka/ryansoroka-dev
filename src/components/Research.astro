@@ -1,0 +1,82 @@
+---
+/**
+ * Research: research projects, one full-width row each.
+ *
+ * Reads every Markdown file in src/content/research/. To add an entry,
+ * add a file there — no changes needed in this component. Optional fields
+ * (role, lab, advisor, dates, stack, link) are only shown when filled in.
+ */
+import { getCollection } from "astro:content";
+import SectionHeading from "./SectionHeading.astro";
+
+// Load all entries and sort them by their `order` field (lowest first).
+const entries = (await getCollection("research")).sort(
+    (a, b) => a.data.order - b.data.order,
+);
+
+// Builds the date line, e.g. "2025 — NOW". Returns "" when there's no start
+// date, so the date line is simply left out.
+const period = (start?: string, end?: string) =>
+    start ? `${start} — ${end ?? "Now"}`.toUpperCase() : "";
+
+// Fallback label when an entry has no dates: 0 → "R-01", 1 → "R-02", …
+const code = (index: number) => `R-${String(index + 1).padStart(2, "0")}`;
+
+// Joins role and organization with " · ", skipping whichever is missing.
+const byline = (role?: string, organization?: string) =>
+    [role, organization].filter(Boolean).join(" · ");
+---
+
+<section id="research" class="border-t border-line py-14 md:py-18">
+    <SectionHeading number="03" title="Research" />
+
+    <!--
+        Each row: dates in a narrow left column and details on the right on
+        desktop; everything stacks on phones.
+    -->
+    <ol class="border border-line bg-surface">
+        {
+            entries.map((entry, index) => (
+                    <li class="grid gap-x-8 gap-y-3 border-b border-line px-5 py-6 last:border-b-0 md:grid-cols-[180px_1fr] md:px-7 md:py-8">
+                        <p class="font-mono text-xs text-accent md:text-[13px]">
+                            {period(entry.data.start, entry.data.end) || code(index)}
+                        </p>
+
+                        <div>
+                            <h3 class="text-xl font-bold md:text-2xl">{entry.data.title}</h3>
+                            {byline(entry.data.role, entry.data.organization) && (
+                                    <p class="mt-1 text-muted">
+                                        {byline(entry.data.role, entry.data.organization)}
+                                    </p>
+                            )}
+                            {entry.data.advisor && (
+                                    <p class="mt-1 font-mono text-xs tracking-wider text-faint md:text-[13px]">
+                                        ADVISOR · {entry.data.advisor}
+                                    </p>
+                            )}
+                            <p class="mt-4 max-w-3xl text-[15px] text-text/80">{entry.data.summary}</p>
+
+                            <!-- Tools and languages used, as small tags. -->
+                            {entry.data.stack && (
+                                    <ul class="mt-4 flex flex-wrap gap-2 font-mono text-xs md:text-[13px]">
+                                        {entry.data.stack.map((item) => (
+                                                <li class="border border-line px-3 py-1.5 text-muted">{item}</li>
+                                        ))}
+                                    </ul>
+                            )}
+
+                            <!-- Optional link to a paper, poster or project page. -->
+                            {entry.data.link && (
+                                    <a
+                                            href={entry.data.link}
+                                            class="mt-5 inline-flex min-h-11 items-center border border-line px-4 font-mono text-xs tracking-wider text-accent hover:text-accent-light md:text-[13px]"
+                                    >
+                                        {entry.data.linkLabel ?? "READ MORE"} ↗
+                                    </a>
+                            )}
+                        </div>
+                    </li>
+            ))
+        }
+    </ol>
+</section>
