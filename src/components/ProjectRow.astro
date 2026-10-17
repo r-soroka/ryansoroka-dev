@@ -1,0 +1,75 @@
+---
+/**
+ * ProjectRow: one project in the Projects list.
+ *
+ * On desktop the row is a 5-column grid that lines up with the column labels
+ * in Projects.astro. On phones the same markup stacks into a card and the
+ * links become tap-sized buttons. Each row also renders its own
+ * ProjectDialog, opened by the Details button.
+ */
+import type { CollectionEntry } from "astro:content";
+import ProjectDialog from "./ProjectDialog.astro";
+
+interface Props {
+    /** One entry from the "projects" content collection. */
+    project: CollectionEntry<"projects">;
+    /** Display code, e.g. "P-01". */
+    code: string;
+}
+
+const { project, code } = Astro.props;
+
+// Unique id built from the file name (e.g. "project-ryansoroka-dev") so the
+// Details button knows which dialog to open.
+const dialogId = `project-${project.id}`;
+
+// Shared link style: bordered 44px buttons on phones, plain text links from md up.
+const linkClass =
+    "flex min-h-11 items-center border border-line px-3 text-accent hover:text-accent-light md:min-h-0 md:border-0 md:px-0";
+---
+
+<li class="grid gap-x-4 gap-y-2 border-b border-line px-5 py-6 last:border-b-0 md:grid-cols-[80px_1fr_200px_70px_190px]">
+    <span class="font-mono text-sm text-accent">{code}</span>
+
+    <div>
+        <h3 class="text-xl font-bold">{project.data.name}</h3>
+        <p class="mt-1 text-[15px] text-muted">{project.data.summary}</p>
+    </div>
+
+    <span class="font-mono text-xs text-muted md:text-[13px]">
+        {project.data.stack.join(", ")}
+    </span>
+
+    <!-- "—" when the project file has no year. -->
+    <span class="font-mono text-xs md:text-[13px]">{project.data.year ?? "—"}</span>
+
+    <div class="flex flex-wrap gap-2 font-mono text-xs md:gap-4 md:text-[13px]">
+        <!-- data-opens-dialog holds the id of the dialog this button opens (see script below). -->
+        <button type="button" data-opens-dialog={dialogId} class={`${linkClass} cursor-pointer`}>
+            DETAILS
+        </button>
+        <!-- Live and source links only render if the project file has them. -->
+        {project.data.live && <a href={project.data.live} class={linkClass}>LIVE ↗</a>}
+        {project.data.source && <a href={project.data.source} class={linkClass}>SRC ↗</a>}
+    </div>
+
+    <ProjectDialog project={project} code={code} dialogId={dialogId} />
+</li>
+
+<script>
+    // Open the matching dialog when a "Details" button is clicked.
+    // Astro runs this script once for the whole page, even with many rows,
+    // so it wires up every Details button at the same time.
+    document
+        .querySelectorAll<HTMLButtonElement>("button[data-opens-dialog]")
+        .forEach((button) => {
+            button.addEventListener("click", () => {
+                const id = button.dataset.opensDialog;
+                if (!id) return;
+                const dialog = document.getElementById(id);
+                // showModal() opens it as a popup: dims the page, traps focus,
+                // and lets Escape close it.
+                if (dialog instanceof HTMLDialogElement) dialog.showModal();
+            });
+        });
+</script>

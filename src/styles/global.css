@@ -1,0 +1,52 @@
+/*
+ * Global styles: loads Tailwind, the fonts, and the C1 design tokens.
+ * Imported once by BaseLayout.astro, so it applies to every page.
+ */
+
+@import "tailwindcss";
+
+/* Self-hosted fonts (installed from npm, so no request to Google Fonts). */
+@import "@fontsource-variable/archivo";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+/*
+ * Design tokens. Every --color-* here becomes a Tailwind class:
+ * --color-accent → text-accent, bg-accent, border-accent, and so on.
+ * Change a value here and it updates everywhere it's used.
+ */
+@theme {
+    /* C1 colors */
+    --color-bg: #0a0f14; /* Page background */
+    --color-surface: #0d141b; /* Cards, panels, dialogs */
+    --color-grid: #131b23; /* Blueprint grid lines */
+    --color-line: #243140; /* Borders and dividers */
+    --color-text: #dce3ea; /* Main text */
+    --color-muted: #9fadbb; /* Secondary text */
+    --color-faint: #8796a5; /* Small labels */
+    --color-accent: #ff8a3d; /* Orange highlight */
+    --color-accent-light: #ffc08f; /* Accent on hover */
+
+    /* C1 fonts: font-sans (headings + body) and font-mono (labels) */
+    --font-sans: "Archivo Variable", system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@layer base {
+    /* Smooth scrolling when a nav link jumps to a section… */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* …but not for people who've asked their system to reduce motion. */
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+    }
+
+    /* Keep section headings from hiding under the top of the screen after a jump. */
+    section[id] {
+        scroll-margin-top: 1.5rem;
+    }
+}

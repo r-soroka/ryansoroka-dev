@@ -1,0 +1,104 @@
+---
+/**
+ * ContactDialog: a small popout with your email, a copy button, an
+ * "open in mail app" button and your social links.
+ *
+ * It's fully static — no form, no backend. Any button with the
+ * data-opens-contact attribute opens it (see the script at the bottom).
+ */
+import { SITE } from "../site.config";
+
+// Only the social links that have a URL are shown.
+const socials = [
+    { label: "GITHUB", href: SITE.socials.github },
+    { label: "LINKEDIN", href: SITE.socials.linkedin },
+].filter((link) => link.href !== "");
+
+const buttonClass =
+    "flex min-h-11 cursor-pointer items-center justify-center border border-line px-4 text-accent hover:text-accent-light";
+---
+
+<dialog
+        id="contact-dialog"
+        aria-labelledby="contact-dialog-title"
+        class="m-auto w-[min(480px,calc(100%-2rem))] border border-line bg-surface p-0 text-text backdrop:bg-black/70"
+>
+    <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+            <div>
+                <p class="font-mono text-xs tracking-widest text-accent">CONTACT</p>
+                <h3 id="contact-dialog-title" class="mt-1 text-2xl font-bold">
+                    Let's talk
+                </h3>
+            </div>
+            <!-- A button inside <form method="dialog"> closes the dialog. -->
+            <form method="dialog">
+                <button
+                        class="flex size-11 items-center justify-center border border-line font-mono text-muted hover:text-accent"
+                        aria-label="Close"
+                >
+                    ✕
+                </button>
+            </form>
+        </div>
+
+        <p class="mt-6 font-mono text-sm break-all md:text-base">{SITE.email}</p>
+
+        <div class="mt-6 grid grid-cols-2 gap-2 font-mono text-xs tracking-wider md:text-[13px]">
+            <!-- data-email gives the script the address to copy. -->
+            <button type="button" data-copy-email data-email={SITE.email} class={buttonClass}>
+                <span data-copy-label>COPY EMAIL</span>
+            </button>
+            <a href={`mailto:${SITE.email}`} class={buttonClass}>OPEN MAIL ↗</a>
+            {
+                socials.map((link) => (
+                        <a href={link.href} class={buttonClass}>
+                            {link.label} ↗
+                        </a>
+                ))
+            }
+        </div>
+
+        <!-- Announces "Copied" to screen readers without moving focus. -->
+        <p class="sr-only" aria-live="polite" data-copy-status></p>
+    </div>
+</dialog>
+
+<script>
+    const dialog = document.getElementById("contact-dialog");
+
+    if (dialog instanceof HTMLDialogElement) {
+        // Open the dialog from any button marked data-opens-contact.
+        document.querySelectorAll("[data-opens-contact]").forEach((button) => {
+            button.addEventListener("click", () => dialog.showModal());
+        });
+
+        // Close it when the dark backdrop is clicked (the backdrop reports
+        // the <dialog> itself as the click target).
+        dialog.addEventListener("click", (event) => {
+            if (event.target === dialog) dialog.close();
+        });
+
+        // Copy the email to the clipboard and briefly show "COPIED".
+        const copyButton = dialog.querySelector<HTMLButtonElement>("[data-copy-email]");
+        const copyLabel = dialog.querySelector<HTMLSpanElement>("[data-copy-label]");
+        const copyStatus = dialog.querySelector<HTMLParagraphElement>("[data-copy-status]");
+
+        copyButton?.addEventListener("click", async () => {
+            const email = copyButton.dataset.email ?? "";
+            try {
+                await navigator.clipboard.writeText(email);
+                if (copyLabel) copyLabel.textContent = "COPIED ✓";
+                if (copyStatus) copyStatus.textContent = "Email copied to clipboard";
+            } catch {
+                // Clipboard can be blocked (e.g. on non-HTTPS pages); the email
+                // is still visible above to copy by hand.
+                if (copyLabel) copyLabel.textContent = "COPY FAILED";
+            }
+            setTimeout(() => {
+                if (copyLabel) copyLabel.textContent = "COPY EMAIL";
+                if (copyStatus) copyStatus.textContent = "";
+            }, 2000);
+        });
+    }
+</script>

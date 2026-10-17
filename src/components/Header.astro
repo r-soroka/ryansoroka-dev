@@ -1,0 +1,110 @@
+---
+/**
+ * Header: logo on the left, navigation on the right.
+ *
+ * Desktop shows the links in a row. On phones (below the md breakpoint,
+ * 768px) they collapse into a Menu button built on <details>/<summary>,
+ * which opens and closes without JavaScript.
+ */
+interface NavItem {
+    number: string;
+    label: string;
+    /** "#id" of the section to jump to. */
+    href: string;
+}
+
+// One list feeds both the desktop nav and the phone menu.
+const navItems: NavItem[] = [
+    { number: "01", label: "About", href: "#about" },
+    { number: "02", label: "Projects", href: "#projects" },
+    { number: "03", label: "Research", href: "#research" },
+    { number: "04", label: "Experience", href: "#experience" },
+    { number: "05", label: "Education", href: "#education" },
+    { number: "06", label: "Contact", href: "#contact" },
+];
+---
+
+<header
+        class="flex items-center justify-between gap-4 border-b border-line py-4 font-mono text-xs tracking-wider md:py-6 md:text-[13px]"
+>
+    <a href="#top" class="py-3 text-text no-underline">
+        RS / <span class="text-accent">RYANSOROKA.DEV</span>
+    </a>
+
+    <!-- Desktop nav: hidden on phones, shown from md up. -->
+    <nav aria-label="Main" class="hidden md:block">
+        <ul class="flex gap-1">
+            {
+                navItems.map((item) => (
+                        <li>
+                            <a
+                                    href={item.href}
+                                    class="block px-3 py-2.5 text-muted uppercase hover:text-accent"
+                            >
+                                {item.number} {item.label}
+                            </a>
+                        </li>
+                ))
+            }
+        </ul>
+    </nav>
+
+    <!--
+        Phone menu: shown on phones, hidden from md up.
+        "group" lets children react to the open state with group-open:.
+    -->
+    <details class="group relative md:hidden" data-mobile-menu>
+        <!-- list-none and the webkit rule remove the default ▸ triangle. -->
+        <summary
+                class="flex h-11 cursor-pointer list-none items-center gap-2 border border-line px-3 uppercase [&::-webkit-details-marker]:hidden"
+        >
+            <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+            >
+                <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+            <!-- Swap the label between "Menu" and "Close" based on the open state. -->
+            <span class="group-open:hidden">Menu</span>
+            <span class="hidden group-open:inline">Close</span>
+        </summary>
+
+        <nav
+                aria-label="Main"
+                class="absolute right-0 z-10 mt-2 w-56 border border-line bg-surface"
+        >
+            <ul>
+                {
+                    navItems.map((item) => (
+                            <li>
+                                <a
+                                        href={item.href}
+                                        class="block border-b border-line px-4 py-3.5 text-muted uppercase last:border-b-0 hover:text-accent"
+                                >
+                                    <span class="text-accent">{item.number}</span> {item.label}
+                                </a>
+                            </li>
+                    ))
+                }
+            </ul>
+        </nav>
+    </details>
+</header>
+
+<script>
+    // Close the phone menu after a link is tapped, so it doesn't stay open
+    // over the section you just jumped to.
+    const menu = document.querySelector<HTMLDetailsElement>("details[data-mobile-menu]");
+
+    menu?.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+            menu.open = false;
+        });
+    });
+</script>

@@ -1,0 +1,86 @@
+---
+/**
+ * Hero: the first thing visitors see — label, name, intro and quick facts.
+ *
+ * The facts are data in the `facts` array, so adding or editing one is a
+ * single line. A fact with an `href` renders as a link.
+ */
+import { SITE } from "../site.config";
+
+interface Fact {
+    label: string;
+    value: string;
+    /** Makes the value a link when set. */
+    href?: string;
+    /** Shows a small orange dot before the value (used for status). */
+    showDot?: boolean;
+}
+
+const facts: Fact[] = [
+    { label: "STATUS", value: "Open to Work", showDot: true },
+    { label: "BASED", value: "Tampa, FL" },
+    { label: "STUDYING", value: "B.S. Computer Science, UTampa" },
+    { label: "CONTACT", value: SITE.email, href: `mailto:${SITE.email}` },
+];
+---
+
+<!-- id="top" is the target of the logo link in the header. -->
+<section id="top" class="py-16 md:py-26">
+    <p class="mb-5 font-mono text-xs tracking-widest text-muted md:text-sm">
+        FIG. 00 — PORTFOLIO · REV 0.1 · 2026
+    </p>
+
+    <!--
+        text-[19vw] scales the name with the screen width on small phones so
+        "SOROKA" never overflows, then switches to fixed sizes at sm and md.
+    -->
+    <h1
+            class="text-[19vw] leading-[0.88] font-extrabold tracking-tighter uppercase sm:text-8xl md:text-[136px]"
+    >
+        <span class="block">Ryan</span>
+        <!-- Outlined text: transparent fill plus an orange stroke around each letter. -->
+        <span
+                class="block text-transparent [-webkit-text-stroke:2px_var(--color-accent)]"
+        >
+            Soroka
+        </span>
+    </h1>
+
+    <!-- Two columns from md up; stacked on phones. -->
+    <div class="mt-10 grid gap-10 md:grid-cols-2 md:items-end">
+        <p class="max-w-lg text-lg leading-snug md:text-[22px]">
+            Student developer. Designing and building small, useful things — and
+            documenting how they work.
+        </p>
+
+        <!-- A description list (<dl>) is the semantic element for label/value pairs. -->
+        <dl class="grid grid-cols-2 gap-x-8 gap-y-5 font-mono text-xs md:text-sm">
+            {
+                facts.map((fact) => (
+                        <div>
+                            <dt class="tracking-widest text-faint">{fact.label}</dt>
+                            <!-- break-words lets the email wrap on narrow screens. -->
+                            <dd class="mt-1 break-words">
+                                {fact.showDot && (
+                                        <span
+                                                class="mr-2 inline-block size-2 rounded-full bg-accent"
+                                                aria-hidden="true"
+                                        />
+                                )}
+                                {fact.href ? (
+                                        <a
+                                                href={fact.href}
+                                                class="text-accent underline-offset-4 hover:text-accent-light hover:underline"
+                                        >
+                                            {fact.value}
+                                        </a>
+                                ) : (
+                                    fact.value
+                                )}
+                            </dd>
+                        </div>
+                ))
+            }
+        </dl>
+    </div>
+</section>

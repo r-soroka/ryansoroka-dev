@@ -1,0 +1,32 @@
+---
+/**
+ * The "page not found" page.
+ *
+ * Astro builds this as 404.html, and hosts like Cloudflare serve it
+ * automatically whenever someone visits a URL that doesn't exist.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Page not found · Ryan Soroka">
+    <main class="flex min-h-svh flex-col justify-center py-24">
+        <p class="mb-5 font-mono text-xs tracking-widest text-muted md:text-sm">
+            ERROR 404 · SHEET NOT FOUND
+        </p>
+        <h1 class="text-7xl leading-[0.88] font-extrabold tracking-tighter uppercase md:text-[136px]">
+            Off the
+            <span class="block text-transparent [-webkit-text-stroke:2px_var(--color-accent)]">
+                Grid
+            </span>
+        </h1>
+        <p class="mt-8 max-w-md text-lg text-muted">
+            This page doesn't exist, or it moved.
+        </p>
+        <a
+                href="/"
+                class="mt-10 flex min-h-11 w-fit items-center border border-accent px-5 font-mono text-xs tracking-wider text-accent hover:text-accent-light md:text-[13px]"
+        >
+            ← BACK TO HOME
+        </a>
+    </main>
+</BaseLayout>

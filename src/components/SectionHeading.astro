@@ -1,0 +1,28 @@
+---
+/**
+ * SectionHeading: the "01 ABOUT" style title used by every section.
+ *
+ * Usage:
+ *   <SectionHeading number="02" title="Projects" meta="INDEX · 3 ENTRIES" />
+ */
+interface Props {
+    /** Small orange number before the title, e.g. "01". */
+    number: string;
+    title: string;
+    /** Optional small label shown on the right, e.g. an entry count. */
+    meta?: string;
+}
+
+const { number, title, meta } = Astro.props;
+---
+
+<div class="mb-8 flex flex-wrap items-baseline justify-between gap-4">
+    <h2 class="text-3xl font-extrabold tracking-tight uppercase md:text-[44px]">
+        <span class="mr-3 align-top font-mono text-sm font-medium text-accent md:text-[15px]">
+            {number}
+        </span>
+        {title}
+    </h2>
+    <!-- Only rendered when a meta label is passed in. -->
+    {meta && <p class="font-mono text-xs tracking-widest text-faint">{meta}</p>}
+</div>

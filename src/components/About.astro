@@ -1,0 +1,67 @@
+---
+/**
+ * About: a short bio plus a languages / tools / learning strip.
+ *
+ * Edit the bio text directly below, and the skills in the `skills` array.
+ */
+import SectionHeading from "./SectionHeading.astro";
+
+interface SkillGroup {
+    label: string;
+    items: string[];
+}
+
+const skills: SkillGroup[] = [
+    {
+        label: "LANGUAGES",
+        items: ["Java", "Python", "C", "C++", "C#", "SQL", "SWQL", "R", "TypeScript", "JavaScript"],
+    },
+    {
+        label: "SOFTWARE DEVELOPMENT",
+        items: ["OOP", "Git", "RESTful APIs", "Databases", "Data Structures & Algorithms", "React", "Node.js", "Astro", "Tailwind"],
+    },
+    {
+        label: "SYSTEMS & SECURITY",
+        items: ["Linux", "Windows", "Server Management", "Network Security"],
+    },
+    {
+        label: "TOOLS",
+        items: ["SolarWinds", "Nmap", "Wireshark", "Bash", "SSH", "VMs", "Active Directory", "Microsoft Sentinel/Defender", "SIEM/XDR"],
+    },
+];
+---
+
+<section id="about" class="border-t border-line py-14 md:py-18">
+    <!-- Narrow heading column + wide text column from md up; stacked on phones. -->
+    <div class="grid gap-8 md:grid-cols-[1fr_2fr] md:gap-12">
+        <SectionHeading number="01" title="About" />
+
+        <div>
+            <p class="text-xl leading-snug md:text-[22px]">
+                [One strong sentence about who you are and what you care about building.]
+            </p>
+            <p class="mt-5 text-muted">
+                [A short paragraph: what you're studying, how you got here, and what
+                you're exploring next.]
+            </p>
+
+            <!--
+                Divider trick: the list's background is the line color, the cells
+                are surface-colored, and the 1px gap (gap-px) lets the line color
+                show through between them.
+            -->
+            <dl
+                    class="mt-8 grid gap-px border border-line bg-line font-mono text-xs sm:grid-cols-2 md:text-[13px]"
+            >
+                {
+                    skills.map((group) => (
+                            <div class="bg-surface p-4">
+                                <dt class="tracking-widest text-faint">{group.label}</dt>
+                                <dd class="mt-1.5">{group.items.join(", ")}</dd>
+                            </div>
+                    ))
+                }
+            </dl>
+        </div>
+    </div>
+</section>

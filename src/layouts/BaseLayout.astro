@@ -1,0 +1,53 @@
+---
+/**
+ * BaseLayout: the shared wrapper for every page.
+ *
+ * It provides the <head> (title, description, favicon), loads the global
+ * styles, draws the blueprint grid background, and centers the content.
+ * Each page's content is inserted where <slot /> is.
+ *
+ * Usage:
+ *   <BaseLayout title="Page title" description="For search results">
+ *       ...page content...
+ *   </BaseLayout>
+ */
+import "../styles/global.css";
+
+interface Props {
+    /** Text in the browser tab and search results. */
+    title?: string;
+    /** Short summary shown under the link in search results. */
+    description?: string;
+}
+
+const {
+    title = "Ryan Soroka",
+    description = "Student developer designing and building small, useful things.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <!-- Lays the page out at the device's real width instead of a zoomed-out desktop view. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+</head>
+<!--
+    The two linear-gradients draw 1px horizontal and vertical lines, and
+    bg-size repeats them every 40px: that's the blueprint grid.
+-->
+<body
+        class="bg-bg text-text font-sans antialiased
+           bg-[linear-gradient(var(--color-grid)_1px,transparent_1px),linear-gradient(90deg,var(--color-grid)_1px,transparent_1px)]
+           bg-size-[40px_40px]"
+>
+<!-- Centers the content, caps its width and adds side padding. -->
+<div class="mx-auto max-w-6xl px-5 md:px-6">
+    <slot />
+</div>
+</body>
+</html>

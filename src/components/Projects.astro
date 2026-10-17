@@ -1,0 +1,48 @@
+---
+/**
+ * Projects: the numbered project index.
+ *
+ * Reads every Markdown file in src/content/projects/ and renders one
+ * ProjectRow per file. To add a project, add a file there — no changes
+ * needed in this component.
+ */
+import { getCollection } from "astro:content";
+import SectionHeading from "./SectionHeading.astro";
+import ProjectRow from "./ProjectRow.astro";
+
+// Load all projects and sort them by their `order` field (lowest first).
+const projects = (await getCollection("projects")).sort(
+    (a, b) => a.data.order - b.data.order,
+);
+
+// Turns a list position into a project code: 0 → "P-01", 1 → "P-02", …
+const code = (index: number) => `P-${String(index + 1).padStart(2, "0")}`;
+---
+
+<section id="projects" class="border-t border-line py-14 md:py-18">
+    <SectionHeading
+            number="02"
+            title="Projects"
+            meta={`INDEX · ${projects.length} ${projects.length === 1 ? "ENTRY" : "ENTRIES"}`}
+    />
+
+    <div class="border border-line bg-surface">
+        <!--
+            Column labels, desktop only. They use the same grid columns as
+            each ProjectRow so everything lines up like a table. Hidden from
+            screen readers because each row already says what it contains.
+        -->
+        <div
+                class="hidden grid-cols-[80px_1fr_200px_70px_190px] gap-4 border-b border-line px-5 py-4 font-mono text-xs tracking-widest text-faint md:grid"
+                aria-hidden="true"
+        >
+            <span>NO.</span><span>PROJECT</span><span>STACK</span><span>YEAR</span><span>LINKS</span>
+        </div>
+
+        <ol>
+            {projects.map((project, index) => (
+                    <ProjectRow project={project} code={code(index)} />
+            ))}
+        </ol>
+    </div>
+</section>
