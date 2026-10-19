@@ -37,7 +37,7 @@ export const ABOUT = {
     facts: [
         { label: "STATUS", value: "Open to work", dot: true },
         { label: "CURRENTLY", value: "SOC Level 1 Analyst, UTampa" },
-        { label: "PREVIOUSLY", value: "Sys Admin, Edwards AFB · AFIT ICE Intern" },
+        { label: "PREVIOUSLY", value: "Sys Admin, Edwards AFB · VICEROY ENVOY Intern" },
         { label: "STUDYING", value: "B.S. Computer Science · May 2027" },
         { label: "BASED", value: HERO.location },
     ],
