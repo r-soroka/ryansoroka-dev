@@ -1,52 +1,33 @@
-/*
- * Global styles: loads Tailwind, the fonts, and the C1 design tokens.
- * Imported once by BaseLayout.astro, so it applies to every page.
- */
-
 @import "tailwindcss";
 
-/* Self-hosted fonts (installed from npm, so no request to Google Fonts). */
-@import "@fontsource-variable/archivo";
-@import "@fontsource/ibm-plex-mono/400.css";
-@import "@fontsource/ibm-plex-mono/500.css";
-
-/*
- * Design tokens. Every --color-* here becomes a Tailwind class:
- * --color-accent → text-accent, bg-accent, border-accent, and so on.
- * Change a value here and it updates everywhere it's used.
- */
 @theme {
-    /* C1 colors */
-    --color-bg: #0a0f14; /* Page background */
-    --color-surface: #0d141b; /* Cards, panels, dialogs */
-    --color-grid: #131b23; /* Blueprint grid lines */
-    --color-line: #243140; /* Borders and dividers */
-    --color-text: #dce3ea; /* Main text */
-    --color-muted: #9fadbb; /* Secondary text */
-    --color-faint: #8796a5; /* Small labels */
-    --color-accent: #ff8a3d; /* Orange highlight */
-    --color-accent-light: #ffc08f; /* Accent on hover */
+    --color-bg: #1c1c1c;
+    --color-surface: #262626;
+    --color-line: #343434;
+    --color-text: #f0f0f0;
+    --color-muted: #a3a3a3;
+    --color-accent: #e3533b;
+    --color-accent-light: #f07a63;
+    --color-faint: #6b6b6b;
 
-    /* C1 fonts: font-sans (headings + body) and font-mono (labels) */
-    --font-sans: "Archivo Variable", system-ui, sans-serif;
-    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+    /* The scrolling logo bar under the hero (SkillsBar.astro). */
+    --animate-marquee: marquee 45s linear infinite;
+    @keyframes marquee {
+        to { transform: translateX(-50%); }
+    }
+
+    --font-display: "Outfit", sans-serif;
+    --font-body: "Inter", sans-serif;
 }
 
-@layer base {
-    /* Smooth scrolling when a nav link jumps to a section… */
-    html {
-        scroll-behavior: smooth;
-    }
+html {
+    background-color: var(--color-bg);
+    color-scheme: dark;
+}
 
-    /* …but not for people who've asked their system to reduce motion. */
-    @media (prefers-reduced-motion: reduce) {
-        html {
-            scroll-behavior: auto;
-        }
-    }
-
-    /* Keep section headings from hiding under the top of the screen after a jump. */
-    section[id] {
-        scroll-margin-top: 1.5rem;
-    }
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
 }

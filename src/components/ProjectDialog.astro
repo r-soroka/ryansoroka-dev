@@ -67,14 +67,14 @@ const { Content } = await render(project);
         </div>
 
         <div class="mt-6 flex gap-2 font-mono text-xs md:text-[13px]">
-            {project.data.live && (
-                    <a href={project.data.live} class="flex min-h-11 items-center border border-line px-4 text-accent hover:text-accent-light">
-                        LIVE ↗
+            {project.data.github && (
+                    <a href={project.data.github} target="_blank" class="flex min-h-11 items-center border border-line px-4 text-accent hover:text-accent-light">
+                        GITHUB ↗
                     </a>
             )}
-            {project.data.source && (
-                    <a href={project.data.source} class="flex min-h-11 items-center border border-line px-4 text-accent hover:text-accent-light">
-                        SOURCE ↗
+            {project.data.demo && (
+                    <a href={project.data.demo} target="_blank" class="flex min-h-11 items-center border border-line px-4 text-accent hover:text-accent-light">
+                        {project.data.demoLabel ?? "DEMO"} ↗
                     </a>
             )}
         </div>

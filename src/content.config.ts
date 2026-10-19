@@ -20,8 +20,9 @@ const projects = defineCollection({
         stack: z.array(z.string()), // e.g. ["Astro", "TypeScript"]
         year: z.number().int().optional(), // Shows "—" when left out.
         order: z.number().int(), // Lower numbers are listed first.
-        live: z.url().optional(), // Link to the running project, if any.
-        source: z.url().optional(), // Link to the code, if public.
+        github: z.url().optional(), // Link to the code on GitHub, if public.
+        demo: z.url().optional(), // Link to a live demo, if any.
+        demoLabel: z.string().optional(), // Button text for the demo link, e.g. "LIVE". Defaults to "DEMO".
     }),
 });
 
@@ -41,7 +42,9 @@ const experience = defineCollection({
 /** One Markdown file per research project in src/content/research/. */
 const research = defineCollection({
     loader: glob({ pattern: "**/*.md", base: "./src/content/research" }),
-    schema: z.object({
+    // Written as a function so it can use image(), which checks the poster
+    // file exists and lets Astro optimize it.
+    schema: ({ image }) => z.object({
         title: z.string(), // The project or paper title.
         role: z.string().optional(), // e.g. "Undergraduate Researcher".
         organization: z.string().optional(), // Lab, department or institution.
@@ -50,8 +53,13 @@ const research = defineCollection({
         start: z.string().optional(), // Dates are hidden when there's no start.
         end: z.string().optional(), // Leave out for ongoing work (shows "Now").
         summary: z.string(),
+        github: z.url().optional(), // Link to the code on GitHub, if public.
+        demo: z.url().optional(), // Link to a live demo, if any.
+        demoLabel: z.string().optional(), // Button text for the demo link, e.g. "LIVE". Defaults to "DEMO".
         link: z.url().optional(), // Paper, poster or project page.
-        linkLabel: z.string().optional(), // Button text for the link, e.g. "POSTER".
+        linkLabel: z.string().optional(), // Button text for the link, e.g. "PAPER".
+        poster: image().optional(), // Poster image next to the .md file, e.g. "./poster.png". Shown in Details.
+        posterAlt: z.string().optional(), // Describes the poster for screen readers.
         order: z.number().int(), // Lower numbers are listed first.
     }),
 });
@@ -71,4 +79,19 @@ const education = defineCollection({
     }),
 });
 
-export const collections = { projects, experience, research, education };
+/** One Markdown file per license or certification in src/content/certifications/. */
+const certifications = defineCollection({
+    loader: glob({ pattern: "**/*.md", base: "./src/content/certifications" }),
+    schema: ({ image }) => z.object({
+        name: z.string(),
+        issuer: z.string(),
+        issued: z.string().optional(), // e.g. "Jul 2026".
+        expires: z.string().optional(), // Leave out if it never expires.
+        credentialId: z.string().optional(),
+        url: z.url().optional(), // Verification link. Adds a VERIFY button.
+        badge: image().optional(), // Badge image next to the .md file, e.g. "./solarwinds.png".
+        order: z.number().int(), // Lower numbers are listed first.
+    }),
+});
+
+export const collections = { projects, experience, research, education, certifications };

@@ -1,0 +1,29 @@
+---
+/**
+ * SocialRail: GitHub / LinkedIn icons from site.config.ts.
+ * Phones: a row of icons under the hero text.
+ * Tablet and up: a vertical bar with an orange line on the hero's right edge.
+ */
+import { Icon } from "astro-icon/components";
+import { SITE } from "../site.config";
+
+const links = [
+    { name: "GitHub", href: SITE.socials.github, icon: "mdi:github" },
+    { name: "LinkedIn", href: SITE.socials.linkedin, icon: "mdi:linkedin" },
+].filter((link) => link.href);
+---
+
+<aside class="flex items-center gap-4 md:absolute md:top-1/2 md:right-0 md:-translate-y-1/2 md:flex-col">
+    <span class="hidden h-20 w-px bg-accent md:block" aria-hidden="true"></span>
+    {links.map((link) => (
+        <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={link.name}
+            class="text-muted transition-colors hover:text-accent"
+        >
+            <Icon name={link.icon} class="size-5" />
+        </a>
+    ))}
+</aside>

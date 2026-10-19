@@ -19,10 +19,9 @@ const projects = (await getCollection("projects")).sort(
 const code = (index: number) => `P-${String(index + 1).padStart(2, "0")}`;
 ---
 
-<section id="projects" class="border-t border-line py-14 md:py-18">
+<section id="projects" class="border-t-2 border-line py-14 md:py-18">
     <SectionHeading
-            number="02"
-            title="Projects"
+            id="projects"
             meta={`INDEX · ${projects.length} ${projects.length === 1 ? "ENTRY" : "ENTRIES"}`}
     />
 
@@ -33,7 +32,7 @@ const code = (index: number) => `P-${String(index + 1).padStart(2, "0")}`;
             screen readers because each row already says what it contains.
         -->
         <div
-                class="hidden grid-cols-[80px_1fr_200px_70px_190px] gap-4 border-b border-line px-5 py-4 font-mono text-xs tracking-widest text-faint md:grid"
+                class="hidden grid-cols-[80px_1fr_200px_70px_230px] gap-4 border-b border-line px-5 py-4 font-mono text-xs tracking-widest text-faint md:grid"
                 aria-hidden="true"
         >
             <span>NO.</span><span>PROJECT</span><span>STACK</span><span>YEAR</span><span>LINKS</span>

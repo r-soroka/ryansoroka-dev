@@ -1,164 +1,196 @@
 # ryansoroka.dev
 
-My personal portfolio site: a fast, static site built with **Astro**, **TypeScript** and **Tailwind CSS**, designed to be updated by editing Markdown files instead of code.
+My personal portfolio: a fast, static site built with **Astro**, **TypeScript** and **Tailwind CSS**. Content lives in Markdown files and one config file, so updating the site rarely means touching code.
 
 **Live:** [ryansoroka.dev](https://ryansoroka.dev)
 
 ## Tech stack
 
-| Tool                                           | Why                                                                                    |
-| :--------------------------------------------- | :------------------------------------------------------------------------------------- |
-| [Astro](https://astro.build)                   | Builds plain static HTML; ships no JavaScript unless a component needs it.             |
-| [TypeScript](https://www.typescriptlang.org)   | Type-checks components and content, so broken data fails the build instead of the page. |
-| [Tailwind CSS v4](https://tailwindcss.com)     | Utility classes driven by a small set of design tokens in `global.css`.                |
-| Archivo + IBM Plex Mono                        | Self-hosted via [Fontsource](https://fontsource.org), so there are no third-party font requests. |
+| Tool | Why |
+| :--- | :--- |
+| [Astro](https://astro.build) | Builds plain static HTML and ships almost no JavaScript. |
+| [TypeScript](https://www.typescriptlang.org) | Type-checks components and content, so bad data fails the build instead of the live page. |
+| [Tailwind CSS v4](https://tailwindcss.com) | Utility classes driven by a few design tokens in `global.css`. |
+| [astro-icon](https://www.astroicon.dev) + [Iconify](https://icon-sets.iconify.design) | Logos and icons from Devicon, Simple Icons and Material Design Icons, with no image files to manage. |
+| [Inter](https://rsms.me/inter/) | The site font, loaded from Google Fonts. |
+| [Cloudflare](https://www.cloudflare.com) | Hosting. |
 
 ## Getting started
 
 Requires **Node.js 22.22 or newer**.
 
 ```sh
-npm install      # install dependencies
+npm install      # install dependencies (run again after pulling changes to package.json)
 npm run dev      # start the dev server at http://localhost:4321
 ```
 
-| Command                   | What it does                                      |
-| :------------------------ | :------------------------------------------------ |
-| `npm run dev`             | Starts the local dev server with live reload      |
-| `npm run build`           | Builds the production site into `dist/`           |
-| `npm run preview`         | Serves the built site locally to check it         |
-| `npm run astro -- check`  | Type-checks the project (needs `@astrojs/check`)  |
+| Command | What it does |
+| :--- | :--- |
+| `npm run dev` | Starts the local dev server with live reload |
+| `npm run build` | Builds the production site into `dist/` |
+| `npm run preview` | Serves the built site locally to check it |
+| `npx astro sync` | Regenerates content types if new content or fields don't show up |
 
 ## Project structure
 
 ```text
 ryansoroka-dev/
-├── public/                      Files served as-is from the site root
-│   ├── favicon.svg
+├── public/                        Files served as-is from the site root
+│   ├── favicon.svg / favicon.ico  "RS" tab icon
+│   ├── og.jpg                     Link-preview image (1200×630) for LinkedIn, iMessage, Slack…
+│   ├── contours.svg               Repeating topographic background
 │   └── soroka_resume.pdf
 ├── src/
-│   ├── content/                 ← Site content: edit these to update the site
-│   │   ├── projects/            One .md file per project
-│   │   ├── research/            One .md file per research project
-│   │   ├── experience/          One .md file per job or role
-│   │   └── education/           One .md file per school or program
-│   ├── components/              One component per page section
-│   │   ├── Header.astro         Logo + navigation (collapses to a menu on phones)
-│   │   ├── Hero.astro           Name, intro and quick facts
-│   │   ├── About.astro          Bio and skills
-│   │   ├── Projects.astro       Project index (renders a ProjectRow per file)
-│   │   ├── ProjectRow.astro     One project + its Details button
-│   │   ├── ProjectDialog.astro  The Details popout
-│   │   ├── Research.astro       Research projects
-│   │   ├── Experience.astro     Experience cards + resume download
-│   │   ├── Education.astro      Schools, details and coursework
-│   │   ├── Contact.astro        Email and links
-│   │   ├── ContactDialog.astro  Contact popout with copy-email button
-│   │   ├── SectionHeading.astro The shared "01 TITLE" heading
+│   ├── site.config.ts             ← Name, email, résumé, socials, hero, About text, skills, nav order
+│   ├── content/                   ← One Markdown file per entry
+│   │   ├── projects/
+│   │   ├── research/              (poster images live next to their .md file)
+│   │   ├── experience/
+│   │   ├── education/
+│   │   └── certifications/        (badge images live next to their .md file)
+│   ├── content.config.ts          The fields each content type allows or requires
+│   ├── components/                One component per page section
+│   │   ├── Header.astro           Brand, section links, résumé link, MENU on smaller screens
+│   │   ├── Hero.astro             Name, role, school, location, buttons, photo
+│   │   ├── SocialRail.astro       GitHub/LinkedIn icons beside the hero
+│   │   ├── SkillsBar.astro        Scrolling logo bar under the hero
+│   │   ├── About.astro            Quick facts, bio and skills grid
+│   │   ├── Projects.astro         Project list (ProjectRow + ProjectDialog per project)
+│   │   ├── Research.astro         Research entries (ResearchDialog for details + poster)
+│   │   ├── Experience.astro       Experience cards + résumé download
+│   │   ├── Education.astro        Schools, details and coursework
+│   │   ├── Certifications.astro   Certification cards with badges
+│   │   ├── Contact.astro          Email and links (ContactDialog: copy-email popout)
+│   │   ├── SectionHeading.astro   The shared "01 TITLE" heading
 │   │   └── Footer.astro
-│   ├── layouts/
-│   │   └── BaseLayout.astro     Shared <head>, background grid and page width
+│   ├── layouts/BaseLayout.astro   <head> (fonts, favicon, link-preview tags), background, page width
 │   ├── pages/
-│   │   ├── index.astro          Homepage: assembles the sections in order
-│   │   └── 404.astro            Page-not-found
-│   ├── styles/
-│   │   └── global.css           Tailwind, fonts and design tokens (colors, fonts)
-│   ├── content.config.ts        Schemas: the required fields for each content type
-│   └── site.config.ts           Email, resume path and social links in one place
+│   │   ├── index.astro            Homepage: puts the sections in order
+│   │   └── 404.astro
+│   ├── styles/global.css          Tailwind setup and design tokens (colors, fonts, animation)
+│   └── assets/                    Images Astro optimizes (hero photo)
 └── astro.config.mjs
 ```
 
 ## Updating the site
 
+### Your details, hero and About section
+
+Everything that isn't a list of entries is in `src/site.config.ts`:
+
+- **`SITE`**: name, initials, domain, email, résumé path and social links. A social link left as `""` is hidden.
+- **`HERO`**: role, school and location under your name.
+- **`ABOUT`**: headline, bio, the quick facts beside it (`facts`; `dot: true` adds the orange status dot) and the skills grid.
+- **`NAV_SECTIONS`**: the order of sections. The header links and the "01, 02…" heading numbers are generated from it, so they always match. If you reorder it, reorder the components in `src/pages/index.astro` too.
+
+### Skills and logos
+
+In `ABOUT.skills`, a skill is either plain text or a name with an icon:
+
+```ts
+"Server Management",
+{ name: "Python", icon: "devicon:python" },
+```
+
+Icons can come from three sets. Search them at the links below and copy the icon's name:
+
+| Prefix | What it is |
+| :--- | :--- |
+| [`devicon:`](https://icon-sets.iconify.design/devicon/) | Full-color tech logos. These also appear in the scrolling bar under the hero. |
+| [`simple-icons:`](https://icon-sets.iconify.design/simple-icons/) | One-color brand logos (shown gray). |
+| [`mdi:`](https://icon-sets.iconify.design/mdi/) | General symbols for skills without a logo (shown gray). |
+
 ### Add a project
 
-Create a Markdown file in `src/content/projects/`, e.g. `weather-app.md`:
+Create a file in `src/content/projects/`, e.g. `weather-app.md`:
 
 ```md
 ---
 name: "Weather App"
 summary: "One line on what it does."
 stack: ["TypeScript", "Astro"]
-year: 2026 # optional; shows "—" without it
-order: 2 # lower numbers appear first
-live: "https://example.com" # optional
-source: "https://github.com/..." # optional
+year: 2026                          # optional; shows "—" without it
+order: 2                            # lower numbers appear first
+github: "https://github.com/..."    # optional: adds a GITHUB button
+demo: "https://example.com"         # optional: adds a DEMO button
+demoLabel: "LIVE"                   # optional: changes the DEMO button text
 ---
 
 The longer story goes here. It appears in the project's **Details** popout.
 ```
 
-The project shows up in the list automatically, numbered by its `order`.
-
 ### Add research
 
-Create a Markdown file in `src/content/research/`:
+Create a file in `src/content/research/`:
 
 ```md
 ---
 title: "Project or paper title"
-role: "Undergraduate Researcher" # optional
-organization: "Lab, University" # optional
-advisor: "Dr. Name" # optional
-stack: ["Python", "OpenSSL"] # optional, shown as tags
-start: "2025" # optional; dates are hidden without it
-end: "2026" # leave out if it's ongoing; it shows "Now"
-summary: "The question you're investigating and your part in it."
-link: "https://..." # optional: paper, poster or project page
-linkLabel: "POSTER" # optional: button text for the link
+summary: "The question and your part in it."
 order: 1
+role: "Undergraduate Researcher"    # optional
+organization: "Lab, University"     # optional
+advisor: "Dr. Name"                 # optional
+stack: ["Python", "OpenSSL"]        # optional, shown as tags
+start: "2025"                       # optional; dates are hidden without it
+end: "2026"                         # leave out if ongoing; shows "Now"
+github: "https://github.com/..."    # optional
+demo: "https://..."                 # optional (demoLabel works here too)
+link: "https://..."                 # optional: paper or project page
+linkLabel: "PAPER"                  # optional: button text for link
+poster: "./my-poster.png"           # optional: image next to this file
+posterAlt: "What the poster shows"  # optional
 ---
+
+Write-up for the **Details** popout. The poster appears below it.
 ```
 
-### Add education
+A **DETAILS** button appears when the file has a write-up or a poster. Posters must be images (PNG, JPG or WebP), not PDFs.
 
-Create a Markdown file in `src/content/education/`:
+### Add a certification
+
+Create a file in `src/content/certifications/`:
 
 ```md
 ---
-degree: "B.S. Computer Science"
-school: "University"
-location: "City, ST" # optional
-start: "2024" # optional
-end: "Expected 2028" # leave out to show "Now"
-details: "GPA, honors, minor…" # optional
-coursework: ["Data Structures", "Algorithms"] # optional, shown as tags
+name: "Certification name"
+issuer: "Issuing organization"
 order: 1
+issued: "Jul 2026"                  # optional
+expires: "Jul 2029"                 # optional; leave out if it never expires
+credentialId: "..."                 # optional
+url: "https://..."                  # optional: adds a VERIFY button
+badge: "./my-badge.png"             # optional: image next to this file
 ---
 ```
 
-### Add experience
+Crop badge images close to the edges so they fill their space.
 
-Create a Markdown file in `src/content/experience/`:
+### Add experience or education
 
-```md
----
-role: "Role"
-organization: "Organization"
-start: "2025"
-end: "2026" # leave out if it's ongoing; it shows "Now"
-summary: "What you did, in one line."
-order: 1
----
-```
+Create a file in `src/content/experience/` or `src/content/education/`. The fields are listed in `src/content.config.ts`. Leave out `end` for anything ongoing and it shows "Now".
 
-### Change your email, resume or social links
+### Change colors, fonts or the background
 
-Edit `src/site.config.ts`. Social links left as empty strings are hidden. To replace the resume, overwrite `public/soroka_resume.pdf` (or change the `resume` path to match a new file name).
-
-### Change colors or fonts
-
-Edit the `@theme` block in `src/styles/global.css`. Every `--color-*` token becomes a Tailwind class (`--color-accent` → `text-accent`, `bg-accent`, …), so a change there updates the whole site.
+- **Colors and fonts:** the `@theme` block in `src/styles/global.css`. Every `--color-*` token becomes a Tailwind class (`--color-accent` → `text-accent`, `bg-accent`…).
+- **Background lines:** change `stroke` near the top of `public/contours.svg`. Closer to the background color (`#1c1c1c`) is fainter.
+- **Link-preview image:** replace `public/og.jpg` with another 1200×630 image.
 
 ### If something breaks
 
-The build checks every content file against `src/content.config.ts`. If a field is missing or a URL is malformed, the error message names the file and the field. If new content doesn't appear, stop the dev server, run `npx astro sync`, and start it again.
+- **Content errors:** the build checks every content file. If a field is missing, a URL is malformed or an image path is wrong, the error names the file and field.
+- **Image paths:** they're relative to the `.md` file and case-sensitive. `Badge.png` and `badge.png` are different files on the live server, even though Windows treats them the same.
+- **"Could not find" or stale errors after adding files:** restart the dev server. If that doesn't help, run `npx astro sync`.
+- **Icon errors:** run `npm install`.
 
 ## Deployment
 
-The site is fully static, so any static host works. The plan is Cloudflare, connected to this GitHub repo: every push to `main` runs `npm run build` and publishes the `dist/` folder to [ryansoroka.dev](https://ryansoroka.dev).
+The site is fully static, so any static host works. It's set up for Cloudflare, connected to this GitHub repo: every push to `master` runs the build and publishes the `dist/` folder.
 
-| Setting          | Value           |
-| :--------------- | :-------------- |
-| Build command    | `npm run build` |
-| Output directory | `dist`          |
+| Setting | Value |
+| :--- | :--- |
+| Build command | `npm run build` |
+| Output directory | `dist` |
+| Node version | 22.22 or newer |
+
+Link previews only work once the site is live, because LinkedIn and others fetch `og.jpg` from ryansoroka.dev.

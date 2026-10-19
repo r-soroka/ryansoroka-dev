@@ -1,0 +1,59 @@
+---
+/**
+ * Certifications: licenses and certifications.
+ *
+ * Reads every Markdown file in src/content/certifications/. To add one,
+ * add a file there — no changes needed in this component.
+ */
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import SectionHeading from "./SectionHeading.astro";
+
+// Load all entries and sort them by their `order` field (lowest first).
+const certs = (await getCollection("certifications")).sort(
+    (a, b) => a.data.order - b.data.order,
+);
+
+// Builds the date line, e.g. "ISSUED MAY 2026 · EXPIRES MAY 2029".
+const dates = (issued?: string, expires?: string) =>
+    [issued && `Issued ${issued}`, expires && `Expires ${expires}`]
+        .filter(Boolean)
+        .join(" · ")
+        .toUpperCase();
+---
+
+<section id="certifications" class="border-t-2 border-line py-14 md:py-18">
+    <SectionHeading id="certifications" />
+
+    <ul class="grid gap-5 md:grid-cols-2">
+        {certs.map(({ data: cert }) => (
+            <li class="flex gap-6 border border-line bg-surface p-6 md:p-8">
+                <!-- Badge image, only if the file has one. -->
+                {cert.badge && (
+                    <Image src={cert.badge} alt="" widths={[160, 320]} sizes="160px" class="size-28 shrink-0 object-contain md:size-40" />
+                )}
+                <div class="flex flex-col">
+                    {dates(cert.issued, cert.expires) && (
+                        <p class="font-mono text-xs text-accent md:text-[13px]">{dates(cert.issued, cert.expires)}</p>
+                    )}
+                    <h3 class="mt-4 text-2xl font-bold">{cert.name}</h3>
+                    <p class="mt-1 text-muted">{cert.issuer}</p>
+                    {cert.credentialId && (
+                        <p class="mt-3 font-mono text-xs tracking-wider text-faint md:text-[13px]">
+                            CREDENTIAL ID · {cert.credentialId}
+                        </p>
+                    )}
+                    {cert.url && (
+                        <a
+                            href={cert.url}
+                            target="_blank"
+                            class="mt-5 inline-flex min-h-11 w-fit items-center border border-line px-4 font-mono text-xs tracking-wider text-accent hover:text-accent-light md:text-[13px]"
+                        >
+                            VERIFY ↗
+                        </a>
+                    )}
+                </div>
+            </li>
+        ))}
+    </ul>
+</section>

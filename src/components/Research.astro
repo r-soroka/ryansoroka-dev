@@ -4,10 +4,11 @@
  *
  * Reads every Markdown file in src/content/research/. To add an entry,
  * add a file there — no changes needed in this component. Optional fields
- * (role, lab, advisor, dates, stack, link) are only shown when filled in.
+ * (role, lab, advisor, dates, stack, github, demo, link, poster) are only shown when filled in.
  */
 import { getCollection } from "astro:content";
 import SectionHeading from "./SectionHeading.astro";
+import ResearchDialog from "./ResearchDialog.astro";
 
 // Load all entries and sort them by their `order` field (lowest first).
 const entries = (await getCollection("research")).sort(
@@ -25,10 +26,18 @@ const code = (index: number) => `R-${String(index + 1).padStart(2, "0")}`;
 // Joins role and organization with " · ", skipping whichever is missing.
 const byline = (role?: string, organization?: string) =>
     [role, organization].filter(Boolean).join(" · ");
+
+// An entry gets a Details popout when its Markdown file has a write-up or a poster.
+const hasDetails = (entry: (typeof entries)[number]) =>
+    Boolean(entry.body?.trim() || entry.data.poster);
+
+// Shared style for the link buttons.
+const linkClass =
+    "inline-flex min-h-11 items-center border border-line px-4 text-accent hover:text-accent-light";
 ---
 
-<section id="research" class="border-t border-line py-14 md:py-18">
-    <SectionHeading number="03" title="Research" />
+<section id="research" class="border-t-2 border-line py-14 md:py-18">
+    <SectionHeading id="research" />
 
     <!--
         Each row: dates in a narrow left column and details on the right on
@@ -65,16 +74,28 @@ const byline = (role?: string, organization?: string) =>
                                     </ul>
                             )}
 
-                            <!-- Optional link to a paper, poster or project page. -->
-                            {entry.data.link && (
-                                    <a
-                                            href={entry.data.link}
-                                            class="mt-5 inline-flex min-h-11 items-center border border-line px-4 font-mono text-xs tracking-wider text-accent hover:text-accent-light md:text-[13px]"
-                                    >
-                                        {entry.data.linkLabel ?? "READ MORE"} ↗
-                                    </a>
-                            )}
+                            <!-- Optional links: GitHub, demo, and a paper/poster. Each shows only if filled in. -->
+                            <div class="mt-5 flex flex-wrap gap-2 font-mono text-xs tracking-wider md:text-[13px]">
+                                {hasDetails(entry) && (
+                                        <button type="button" data-opens-research={`research-${entry.id}`} class={`${linkClass} cursor-pointer`}>
+                                            DETAILS
+                                        </button>
+                                )}
+                                {entry.data.github && (
+                                        <a href={entry.data.github} target="_blank" class={linkClass}>GITHUB ↗</a>
+                                )}
+                                {entry.data.demo && (
+                                        <a href={entry.data.demo} target="_blank" class={linkClass}>{entry.data.demoLabel ?? "DEMO"} ↗</a>
+                                )}
+                                {entry.data.link && (
+                                        <a href={entry.data.link} target="_blank" class={linkClass}>
+                                            {entry.data.linkLabel ?? "READ MORE"} ↗
+                                        </a>
+                                )}
+                            </div>
                         </div>
+
+                        {hasDetails(entry) && <ResearchDialog entry={entry} dialogId={`research-${entry.id}`} />}
                     </li>
             ))
         }

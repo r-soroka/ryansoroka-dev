@@ -28,7 +28,7 @@ const linkClass =
     "flex min-h-11 items-center border border-line px-3 text-accent hover:text-accent-light md:min-h-0 md:border-0 md:px-0";
 ---
 
-<li class="grid gap-x-4 gap-y-2 border-b border-line px-5 py-6 last:border-b-0 md:grid-cols-[80px_1fr_200px_70px_190px]">
+<li class="grid gap-x-4 gap-y-2 border-b border-line px-5 py-6 last:border-b-0 md:grid-cols-[80px_1fr_200px_70px_230px]">
     <span class="font-mono text-sm text-accent">{code}</span>
 
     <div>
@@ -48,9 +48,9 @@ const linkClass =
         <button type="button" data-opens-dialog={dialogId} class={`${linkClass} cursor-pointer`}>
             DETAILS
         </button>
-        <!-- Live and source links only render if the project file has them. -->
-        {project.data.live && <a href={project.data.live} class={linkClass}>LIVE ↗</a>}
-        {project.data.source && <a href={project.data.source} class={linkClass}>SRC ↗</a>}
+        <!-- GitHub and demo links only render if the project file has them. -->
+        {project.data.github && <a href={project.data.github} target="_blank" class={linkClass}>GITHUB ↗</a>}
+        {project.data.demo && <a href={project.data.demo} target="_blank" class={linkClass}>{project.data.demoLabel ?? "DEMO"} ↗</a>}
     </div>
 
     <ProjectDialog project={project} code={code} dialogId={dialogId} />

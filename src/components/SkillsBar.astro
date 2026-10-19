@@ -1,0 +1,34 @@
+---
+/**
+ * SkillsBar: a slowly scrolling row of logos under the hero.
+ *
+ * It shows every skill in ABOUT (site.config.ts) that has a devicon logo,
+ * so adding a skill there adds it here too. The row is drawn twice side by
+ * side and slid left by half its width, so the loop has no visible jump.
+ * It pauses on hover, and stays still for visitors who turned on
+ * "reduce motion" on their device.
+ */
+import { Icon } from "astro-icon/components";
+import { ABOUT } from "../site.config";
+
+const logos = ABOUT.skills
+    .flatMap((group) => group.items)
+    .filter((item) => typeof item !== "string" && item.icon.startsWith("devicon:")) as { name: string; icon: string }[];
+---
+
+<div
+    class="group overflow-hidden border-t-2 border-line py-8 [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]"
+    aria-label="Technologies I use"
+>
+    <div class="flex w-max animate-marquee group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+        {[0, 1].map((copy) => (
+            <ul class="flex shrink-0 items-center gap-14 pr-14" aria-hidden={copy === 1 ? "true" : undefined}>
+                {logos.map((logo) => (
+                    <li title={logo.name}>
+                        <Icon name={logo.icon} class="size-9" aria-label={copy === 0 ? logo.name : undefined} />
+                    </li>
+                ))}
+            </ul>
+        ))}
+    </div>
+</div>

@@ -3,7 +3,7 @@
  * BaseLayout: the shared wrapper for every page.
  *
  * It provides the <head> (title, description, favicon), loads the global
- * styles, draws the blueprint grid background, and centers the content.
+ * styles, draws the contour-line background, and centers the content.
  * Each page's content is inserted where <slot /> is.
  *
  * Usage:
@@ -22,8 +22,12 @@ interface Props {
 
 const {
     title = "Ryan Soroka",
-    description = "Student developer designing and building small, useful things.",
+    description = "Computer Science student at the University of Tampa and SOC analyst, focused on security and building software.",
 } = Astro.props;
+
+// Full URLs for link previews. Astro.site is "https://ryansoroka.dev" (set in astro.config.mjs).
+const pageUrl = new URL(Astro.url.pathname, Astro.site);
+const previewImage = new URL("/og.jpg", Astro.site);
 ---
 
 <!doctype html>
@@ -35,18 +39,42 @@ const {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={pageUrl} />
+
+    <!--
+        Link previews: the card shown when the site is shared on LinkedIn,
+        iMessage, Slack, Discord, etc. public/og.jpg is the 1200x630 image.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Ryan Soroka" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={previewImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Ryan Soroka, Computer Science Student and SOC Analyst" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#1c1c1c" />
+
+    <!-- Loads Inter (the site font) in every weight the site uses, 400 to 800. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    />
 </head>
 <!--
-    The two linear-gradients draw 1px horizontal and vertical lines, and
-    bg-size repeats them every 40px: that's the blueprint grid.
+    public/contours.svg is a tile of faint topographic lines that repeats
+    seamlessly, so it fills any screen size. To change how strong the lines
+    look, edit the stroke color near the top of that file.
 -->
 <body
-        class="bg-bg text-text font-sans antialiased
-           bg-[linear-gradient(var(--color-grid)_1px,transparent_1px),linear-gradient(90deg,var(--color-grid)_1px,transparent_1px)]
-           bg-size-[40px_40px]"
+        class="bg-bg bg-[url(/contours.svg)] text-text font-body antialiased"
 >
 <!-- Centers the content, caps its width and adds side padding. -->
-<div class="mx-auto max-w-6xl px-5 md:px-6">
+<div class="mx-auto max-w-7xl px-5 md:px-6">
     <slot />
 </div>
 </body>

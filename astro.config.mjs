@@ -2,15 +2,19 @@
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 
+import icon from "astro-icon";
+
 // Astro configuration: https://docs.astro.build/en/reference/configuration-reference/
 export default defineConfig({
-    // The live URL. Astro uses it to build absolute links (canonical URLs,
-    // social preview images, sitemaps).
-    site: "https://ryansoroka.dev",
+  // The live URL. Astro uses it to build absolute links (canonical URLs,
+  // social preview images, sitemaps).
+  site: "https://ryansoroka.dev",
 
-    vite: {
-        // Tailwind CSS v4 runs as a Vite plugin — this is what makes the
-        // utility classes in every .astro file work.
-        plugins: [tailwindcss()],
-    },
+  vite: {
+      // Tailwind CSS v4 runs as a Vite plugin — this is what makes the
+      // utility classes in every .astro file work.
+      plugins: [tailwindcss()],
+  },
+
+  integrations: [icon()],
 });

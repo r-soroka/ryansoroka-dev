@@ -2,18 +2,25 @@
 /**
  * SectionHeading: the "01 ABOUT" style title used by every section.
  *
+ * The number and title come from NAV_SECTIONS in site.config.ts, so they
+ * always match the header. Reorder sections there and both update.
+ *
  * Usage:
- *   <SectionHeading number="02" title="Projects" meta="INDEX · 3 ENTRIES" />
+ *   <SectionHeading id="projects" meta="INDEX · 3 ENTRIES" />
  */
+import { NAV_SECTIONS, type SectionId } from "../site.config";
+
 interface Props {
-    /** Small orange number before the title, e.g. "01". */
-    number: string;
-    title: string;
+    /** Which section this heads, e.g. "about". */
+    id: SectionId;
     /** Optional small label shown on the right, e.g. an entry count. */
     meta?: string;
 }
 
-const { number, title, meta } = Astro.props;
+const { id, meta } = Astro.props;
+const index = NAV_SECTIONS.findIndex((s) => s.id === id);
+const number = String(index + 1).padStart(2, "0");
+const title = NAV_SECTIONS[index].label;
 ---
 
 <div class="mb-8 flex flex-wrap items-baseline justify-between gap-4">
